@@ -222,4 +222,4 @@ python3 -m unittest discover -s tests
 
 ## Status of this repository
 
-Code and tests are present in this tree and were verified locally before publication. The repository is publishable as public `zjashanda/skillhub-sync` on branch `main`; no push has been performed yet. The upstream repositories this tool declares are listed in [docs/repo-inventory.md](docs/repo-inventory.md), which also records that no upstream repository is renamed, archived or deleted by this work.
+Published as public `zjashanda/skillhub-sync` on branch `main` (initial commit `ea8bb2c7e510fb8a98cfc67a372721961efdccce`). Before that push the tree was verified locally: 23 hermetic tests pass, the credential scanner reports no findings, and a live run against the declared upstream repositories installed four skills and then reported them `IN_SYNC`. The upstream repositories this tool declares are listed in [docs/repo-inventory.md](docs/repo-inventory.md), which also records that no upstream repository is renamed, archived or deleted by this work.

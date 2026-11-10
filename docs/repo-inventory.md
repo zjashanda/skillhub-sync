@@ -11,7 +11,10 @@
 | 可见性 | public |
 | 默认分支 | `main` |
 | 内容 | `skill_sync.py`、Windows/Linux bootstrap、manifest/profile、单测、文档、敏感信息扫描工具 |
-| 首次推送 | **未执行**，等待门禁批准 |
+| 地址 | https://github.com/zjashanda/skillhub-sync |
+| 首次推送 | 2026-11-10，`main` @ `ea8bb2c7e510fb8a98cfc67a372721961efdccce`（19 files, 4503 insertions） |
+| 推送方式 | SSH over 443（`ssh.github.com:443`，本机 `github.com` 的 git 协议不可达） |
+| 发布后复验 | 全新 clone 后 `python3 -m unittest discover -s tests` 23 tests OK；`tools/secret_scan.py` 0 findings |
 
 ## 2. 声明同步的上游 canonical 仓库（10 个，均为 public）
 
