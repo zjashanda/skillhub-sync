@@ -1,0 +1,22 @@
+{
+  "schema": "ark.skillhub-sync.profile.v1",
+  "profile": "win-bench",
+  "platform": "windows",
+  "install_root": "~/.codex/skills",
+  "include": [
+    "venusahisiburner",
+    "lstest",
+    "listenai-play",
+    "Polaris",
+    "usb-tree",
+    "clearusb",
+    "skill-git"
+  ],
+  "include_tags": [],
+  "exclude": ["mars-belt"],
+  "state_file": "~/.local/state/ark/skillhub-sync/state.json",
+  "keep_backups": 3,
+  "transport": "auto",
+  "timeout_seconds": 300,
+  "notes": "Windows 台架节点（win005 等）的公共能力集合：烧录 + 真机语音验证 + USB 工具。mars-belt 只在需要打包的节点单独加入；项目 profile 由 venusahisiburner/scripts/profiles 提供，不整仓库复制。"
+}

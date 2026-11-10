@@ -1,0 +1,127 @@
+{
+  "schema": "ark.skillhub-sync.v1",
+  "version": 1,
+  "auth": {
+    "token_env": "GITHUB_TOKEN"
+  },
+  "notes": "canonical Skill 真源清单。只声明经过 NOAH-45 盘点确认的 canonical 能力仓库；节点通过 profile 选择需要同步的子集，不做全量复制。",
+  "skills": [
+    {
+      "name": "venusahisiburner",
+      "repo": "https://github.com/zjashanda/venusahisiburner.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "device-burn"],
+      "sync": "canonical",
+      "exclude": ["*.log", "*.tmp"],
+      "notes": "VenusA/CSK + HISI/HI3863 统一烧录状态机；项目差异只放 scripts/profiles。"
+    },
+    {
+      "name": "Polaris",
+      "repo": "https://github.com/zjashanda/Polaris.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "test-voice"],
+      "sync": "canonical",
+      "exclude": ["polaris.local.json", "*.log"],
+      "notes": "BDD/Cucumber + Event Runtime 真机语音验证框架；等待 NOAH-45 后续把 lstest 定为语音主 canonical 后可能降级为 profile 宿主。"
+    },
+    {
+      "name": "lstest",
+      "repo": "https://github.com/zjashanda/lstest.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "test-voice"],
+      "sync": "canonical",
+      "exclude": ["*.log", ".venv/**", "**/__pycache__/**"],
+      "notes": "公共测试库（TaskArtifacts / DeviceProfile / ScenarioRuntime / ToolLogValidator）。"
+    },
+    {
+      "name": "listenai-play",
+      "repo": "https://github.com/zjashanda/listenai-play.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "test-voice"],
+      "sync": "canonical",
+      "exclude": ["*.log", "assets/**/*.wav"],
+      "notes": "音频播放/采集入口 + 安装脚本唯一来源。"
+    },
+    {
+      "name": "ark-dispatch",
+      "repo": "https://github.com/zjashanda/ark-dispatch.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "dispatch-knowledge"],
+      "sync": "canonical",
+      "notes": "只做决策不执行的 plan.v1 调度 skill。"
+    },
+    {
+      "name": "ark-kb",
+      "repo": "https://github.com/zjashanda/ark-kb.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "dispatch-knowledge"],
+      "sync": "canonical",
+      "require_skill_md": false,
+      "notes": "能力台账 registry/entries/index/schema，属于知识库仓库而非技能目录，因此不要求根目录 SKILL.md。"
+    },
+    {
+      "name": "mars-belt",
+      "repo": "https://github.com/zjashanda/mars-belt.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["device-burn", "mars-platform"],
+      "sync": "canonical",
+      "exclude": ["*.log", "deviceInfo_generated.json", "assets/**"],
+      "notes": "MarsPlatform 打包/烧录/验证自治流程；按方案需逐步去掉内嵌的 listenai-play、listenai-laid-installer 副本。"
+    },
+    {
+      "name": "usb-tree",
+      "repo": "https://github.com/zjashanda/usb-tree.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["device-tool"],
+      "sync": "canonical",
+      "notes": "USB 拓扑/设备树枚举工具。"
+    },
+    {
+      "name": "clearusb",
+      "repo": "https://github.com/zjashanda/clearusb.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["device-tool"],
+      "sync": "canonical",
+      "notes": "USB 复位/清理工具。"
+    },
+    {
+      "name": "skill-git",
+      "repo": "https://github.com/zjashanda/skill-git.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-runtime", "skill-engineering"],
+      "sync": "canonical",
+      "exclude": ["*.log", ".venv/**"],
+      "notes": "Skill 生成/校验/发布（lint），是 skill 工程化的唯一入口。"
+    }
+  ],
+  "disabled": [
+    {
+      "name": "ark-env",
+      "reason": "当前没有独立 git 仓库：节点环境变量以 /srv/storage/ark/env/env.json 经 HTTP 只读分发。待 NOAH-49（ark-node）建立仓库后再纳入。"
+    },
+    {
+      "name": "ark-mesh",
+      "reason": "当前没有独立 git 仓库：节点取件能力由单个 ark_fetch.py 提供。待 NOAH-49（ark-node）建立仓库后再纳入。"
+    }
+  ]
+}

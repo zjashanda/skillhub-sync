@@ -1,0 +1,14 @@
+{
+  "schema": "ark.skillhub-sync.profile.v1",
+  "profile": "template",
+  "platform": "any",
+  "install_root": "~/.codex/skills",
+  "include": ["skill-git"],
+  "include_tags": [],
+  "exclude": [],
+  "state_file": "~/.local/state/ark/skillhub-sync/state.json",
+  "keep_backups": 3,
+  "transport": "auto",
+  "timeout_seconds": 180,
+  "notes": "新建节点 profile 的最小模板：复制本文件并改名，只填该节点真正需要的 canonical Skill。不要用 include_tags 做全量同步。"
+}

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 工具运行时产物（不得入库）
+.skillhub-sync/
+state.json
+*.log
+*.tmp
+
+# 本地编排/演练目录
+.local/
+out/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

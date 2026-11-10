@@ -1,0 +1,19 @@
+{
+  "schema": "ark.skillhub-sync.profile.v1",
+  "profile": "bsz-t14",
+  "platform": "linux",
+  "install_root": "~/.codex/skills",
+  "include": [
+    "skill-git",
+    "ark-kb",
+    "ark-dispatch",
+    "lstest"
+  ],
+  "include_tags": [],
+  "exclude": [],
+  "state_file": "~/.local/state/ark/skillhub-sync/state.json",
+  "keep_backups": 3,
+  "transport": "http",
+  "timeout_seconds": 180,
+  "notes": "bszT14 是 Linux 办公网开发机。github.com 的 git 协议在本机不可达（ls-remote 会挂到超时），api.github.com 与 tarball 接口可达，因此本 profile 固定 transport=http。其他节点若 git 可用，可改为 auto 或 git。"
+}
