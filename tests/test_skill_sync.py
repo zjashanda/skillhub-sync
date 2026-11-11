@@ -10,6 +10,7 @@ import contextlib
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import tarfile
@@ -767,8 +768,10 @@ class SkillSyncTestCase(unittest.TestCase):
             },
         )
         self.assertEqual(report["schema"], "ark.skillhub-sync.report.v1")
-        self.assertEqual(report["tool_version"], "0.1.0")
-        self.assertTrue(report["generated_at"].endswith("Z"))
+        self.assertEqual(report["tool_version"], "0.1.1")
+        self.assertRegex(
+            report["generated_at"], r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$"
+        )
         self.assertEqual(set(report["summary"].keys()), set(skill_sync.STATUSES))
         self.assertEqual(report["summary"]["IN_SYNC"], 1)
         self.assertEqual(report["summary"]["ABSENT"], 1)
@@ -782,6 +785,70 @@ class SkillSyncTestCase(unittest.TestCase):
         )
         self.assertEqual(report["profile"], "p")
         self.assertEqual(report["install_root"], str(self.install_root))
+
+    # -- 20. time contract ----------------------------------------------
+
+    def test_now_text_uses_beijing_contract_format(self):
+        value = skill_sync.now_text()
+        self.assertRegex(value, r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$")
+        self.assertNotIn("T", value)
+        self.assertNotIn("Z", value)
+        self.assertIsNone(re.search(r"[+-]\d{2}:?\d{2}$", value))
+
+    def test_now_stamp_uses_hyphen_format(self):
+        value = skill_sync.now_stamp()
+        self.assertRegex(value, r"^\d{8}-\d{6}$")
+
+    def test_backup_directory_name_uses_hyphen_stamp(self):
+        repo, manifest, profile = self.install_demo()
+        self.commit_files(repo, {"SKILL.md": "second\n"})
+        code, report, _err = self.run_json(
+            self.base_args(manifest, profile) + ["apply", "--yes", "--json"]
+        )
+        self.assertEqual(code, 0, report)
+        backups = self.backup_dirs("demo")
+        self.assertTrue(backups)
+        for path in backups:
+            self.assertRegex(path.name, r"^\d{8}-\d{6}(-\d+)?$")
+            self.assertNotIn("T", path.name)
+            self.assertNotIn("Z", path.name)
+
+    def test_report_and_state_have_no_timezone_markers(self):
+        _repo, manifest, profile = self.install_demo()
+        code, report, _err = self.run_json(
+            self.base_args(manifest, profile) + ["status", "--json"]
+        )
+        self.assertEqual(code, 0, report)
+        state = self.state_data()
+        values = (
+            report["generated_at"],
+            state["updated_at"],
+            state["skills"]["demo"]["installed_at"],
+        )
+        for value in values:
+            self.assertRegex(value, r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$")
+            self.assertNotIn("T", value)
+            self.assertNotIn("Z", value)
+            self.assertIsNone(re.search(r"[+-]\d{2}:?\d{2}$", value))
+
+    def test_time_lint_gate_passes(self):
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "tools" / "time_lint.py"),
+                "--gate",
+                "--root",
+                str(REPO_ROOT),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            timeout=120,
+        )
+        self.assertEqual(
+            completed.returncode, 0, completed.stdout + completed.stderr
+        )
 
 
 if __name__ == "__main__":

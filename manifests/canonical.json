@@ -18,17 +18,6 @@
       "notes": "VenusA/CSK + HISI/HI3863 统一烧录状态机；项目差异只放 scripts/profiles。"
     },
     {
-      "name": "Polaris",
-      "repo": "https://github.com/zjashanda/Polaris.git",
-      "ref": "main",
-      "path": ".",
-      "visibility": "public",
-      "tags": ["core-capability", "test-voice"],
-      "sync": "canonical",
-      "exclude": ["polaris.local.json", "*.log"],
-      "notes": "BDD/Cucumber + Event Runtime 真机语音验证框架；等待 NOAH-45 后续把 lstest 定为语音主 canonical 后可能降级为 profile 宿主。"
-    },
-    {
       "name": "lstest",
       "repo": "https://github.com/zjashanda/lstest.git",
       "ref": "main",
@@ -37,7 +26,7 @@
       "tags": ["core-capability", "test-voice"],
       "sync": "canonical",
       "exclude": ["*.log", ".venv/**", "**/__pycache__/**"],
-      "notes": "公共测试库（TaskArtifacts / DeviceProfile / ScenarioRuntime / ToolLogValidator）。"
+      "notes": "公共测试库（TaskArtifacts / DeviceProfile / ScenarioRuntime / ToolLogValidator）；Polaris 的能力已并入本仓库。"
     },
     {
       "name": "listenai-play",
@@ -49,27 +38,6 @@
       "sync": "canonical",
       "exclude": ["*.log", "assets/**/*.wav"],
       "notes": "音频播放/采集入口 + 安装脚本唯一来源。"
-    },
-    {
-      "name": "ark-dispatch",
-      "repo": "https://github.com/zjashanda/ark-dispatch.git",
-      "ref": "main",
-      "path": ".",
-      "visibility": "public",
-      "tags": ["core-capability", "dispatch-knowledge"],
-      "sync": "canonical",
-      "notes": "只做决策不执行的 plan.v1 调度 skill。"
-    },
-    {
-      "name": "ark-kb",
-      "repo": "https://github.com/zjashanda/ark-kb.git",
-      "ref": "main",
-      "path": ".",
-      "visibility": "public",
-      "tags": ["core-capability", "dispatch-knowledge"],
-      "sync": "canonical",
-      "require_skill_md": false,
-      "notes": "能力台账 registry/entries/index/schema，属于知识库仓库而非技能目录，因此不要求根目录 SKILL.md。"
     },
     {
       "name": "mars-belt",
@@ -103,6 +71,39 @@
       "notes": "USB 复位/清理工具。"
     },
     {
+      "name": "device-io",
+      "repo": "https://github.com/zjashanda/device-io.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["device-tool", "device-runtime"],
+      "sync": "canonical",
+      "exclude": ["*.log", ".venv/**", "**/__pycache__/**"],
+      "notes": "USB/串口设备枚举、物理板卡分组、端口角色解析、幽灵设备清理与驱动适配的统一 JSON 契约；不烧录、不装驱动。"
+    },
+    {
+      "name": "audio-runtime",
+      "repo": "https://github.com/zjashanda/audio-runtime.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-runtime", "audio-runtime"],
+      "sync": "canonical",
+      "exclude": ["*.log", ".venv/**", "**/__pycache__/**"],
+      "notes": "台架音频栈统一接口：枚举端点、探测音频文件、播放、录制 PCM 与转码；仅标准库，替代各项目内的复制副本。"
+    },
+    {
+      "name": "tts-runtime",
+      "repo": "https://github.com/zjashanda/tts-runtime.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-runtime", "tts-runtime"],
+      "sync": "canonical",
+      "exclude": ["*.log", ".venv/**", "**/__pycache__/**"],
+      "notes": "统一 TTS 运行时（lstts 云端 / melotts 本地 / mock 自检），CLI、JSON 契约与退出码一致；仓库不含虚拟环境与模型权重。"
+    },
+    {
       "name": "skill-git",
       "repo": "https://github.com/zjashanda/skill-git.git",
       "ref": "main",
@@ -112,16 +113,85 @@
       "sync": "canonical",
       "exclude": ["*.log", ".venv/**"],
       "notes": "Skill 生成/校验/发布（lint），是 skill 工程化的唯一入口。"
+    },
+    {
+      "name": "ark-dispatch",
+      "repo": "https://github.com/zjashanda/ark-dispatch.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "dispatch-knowledge"],
+      "sync": "canonical",
+      "notes": "只做决策不执行的 plan.v1 调度 skill。"
+    },
+    {
+      "name": "ark-kb",
+      "repo": "https://github.com/zjashanda/ark-kb.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-capability", "dispatch-knowledge"],
+      "sync": "canonical",
+      "require_skill_md": false,
+      "notes": "能力台账 registry/entries/index/schema，属于知识库仓库而非技能目录，因此不要求根目录 SKILL.md。"
+    },
+    {
+      "name": "ark-node",
+      "repo": "https://github.com/zjashanda/ark-node.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-runtime", "node-ops"],
+      "sync": "canonical",
+      "require_skill_md": false,
+      "exclude": [],
+      "notes": "工具/库仓库，无 SKILL.md，由 ark-node CLI 或 pip 入口调用；覆盖环境变量同步、节点身份、任务目录初始化、能力探测与安全取件。"
+    },
+    {
+      "name": "asset-tools",
+      "repo": "https://github.com/zjashanda/asset-tools.git",
+      "ref": "main",
+      "path": ".",
+      "visibility": "public",
+      "tags": ["core-runtime", "asset-supply"],
+      "sync": "canonical",
+      "require_skill_md": false,
+      "exclude": [],
+      "notes": "工具/库仓库，无 SKILL.md，由 ark-node CLI 或 pip 入口调用；负责资产发现、清单、SHA-256 校验、内容寻址缓存与供应。"
     }
   ],
   "disabled": [
     {
+      "name": "Polaris",
+      "reason": "能力已并入 lstest（NOAH-54 parity 31/31），本阶段起改为只读引用，不再作为 canonical 入口同步。"
+    },
+    {
+      "name": "tcl-device-autoburn",
+      "reason": "已停用，统一由 venusahisiburner 承担。"
+    },
+    {
       "name": "ark-env",
-      "reason": "当前没有独立 git 仓库：节点环境变量以 /srv/storage/ark/env/env.json 经 HTTP 只读分发。待 NOAH-49（ark-node）建立仓库后再纳入。"
+      "reason": "无独立 git 仓库，能力并入 ark-node。"
     },
     {
       "name": "ark-mesh",
-      "reason": "当前没有独立 git 仓库：节点取件能力由单个 ark_fetch.py 提供。待 NOAH-49（ark-node）建立仓库后再纳入。"
+      "reason": "无独立 git 仓库，能力并入 ark-node。"
+    },
+    {
+      "name": "burn_bundle",
+      "reason": "归档候选，只读引用，待郑保山批准后打 tag 冻结。"
+    },
+    {
+      "name": "polaris-device-validation",
+      "reason": "归档候选，只读引用，待郑保山批准后打 tag 冻结。"
+    },
+    {
+      "name": "listenai-laid-installer",
+      "reason": "归档候选，只读引用，待郑保山批准后打 tag 冻结。"
+    },
+    {
+      "name": "a4m-Jenkins",
+      "reason": "归档候选，只读引用，待郑保山批准后打 tag 冻结。"
     }
   ]
 }

@@ -187,7 +187,7 @@ Every installed skill gets a `tree_digest` in the state file. Before any remote 
 - No baseline at all: `LOCAL_DRIFT` with `reason: no-baseline`. A hand-copied directory is never treated as managed by accident.
 - To accept the current tree as the baseline: `adopt --only <name>`. This records the local digest and the currently resolved remote commit. It does not change any file.
 
-A backup is written before each replacement, to `<install_root>/.skillhub-sync/backups/<name>/<timestamp>`, keeping `keep_backups` directories per skill (default 3). A lock next to the state file prevents two writers from running at once.
+A backup is written before each replacement, to `<install_root>/.skillhub-sync/backups/<name>/<timestamp>`, keeping `keep_backups` directories per skill (default 3). `<timestamp>` is Beijing time formatted `YYYYMMDD-HHMMSS`. A lock next to the state file prevents two writers from running at once.
 
 ## Repository layout
 
@@ -199,7 +199,8 @@ A backup is written before each replacement, to `<install_root>/.skillhub-sync/b
 | `bootstrap/skillhub-sync.sh` | Bash bootstrap, defaults to `python3`. |
 | `bootstrap/skillhub-sync.ps1` | PowerShell 5.1+ bootstrap. |
 | `tools/secret_scan.py` | Offline credential scanner for pre-publication checks. |
-| `tests/test_skill_sync.py` | 23 hermetic tests. |
+| `tools/time_lint.py` | Time-contract linter: rejects 'T' separators, 'Z' suffixes, numeric offsets and fractional seconds. |
+| `tests/test_skill_sync.py` | 28 hermetic tests. |
 
 ## Docs
 

@@ -7,7 +7,9 @@
     "skill-git",
     "ark-kb",
     "ark-dispatch",
-    "lstest"
+    "lstest",
+    "ark-node",
+    "asset-tools"
   ],
   "include_tags": [],
   "exclude": [],

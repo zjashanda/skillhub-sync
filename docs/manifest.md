@@ -43,9 +43,12 @@ A schema mismatch is a configuration error and exits 3 before anything is read f
 | Field | Required | Type | Behavior |
 |---|---|---|---|
 | `name` | yes | string | Matched against skill names. |
-| `reason` | no | any | Informational. Preserved so the decision is readable months later. |
+| `reason` | no | any | Why this name is intentionally not synced. Preserved so the decision is readable months later. |
 
-A `disabled` name does not need a matching `skills` entry. That is the point: a candidate that has no repository yet is recorded, and stays out of every selection, without a broken reference in `skills`.
+A `disabled` name does not need a matching `skills` entry. That is the point: a candidate is recorded here and stays out of every selection, without a broken reference in `skills`. Two classes live in the list:
+
+- **Read-only reference / merged / retired**: the capability now lives in another canonical repository, or the tool was retired. The name is kept only to map history.
+- **Archive candidate**: the repository still exists but is no longer a canonical entry point. It is read only until an explicit approval freezes it with a tag.
 
 ## profiles/<node>.json
 
@@ -85,16 +88,22 @@ Error cases, both exit 3 with nothing written:
 
 `include_tags` is a union with `include`, not a replacement. Use it for a genuine class of skills, not as a shortcut for "everything". The shipped profiles keep it empty.
 
-## Why ark-env and ark-mesh are disabled
+## Disabled entries (intentionally not synced)
 
-Neither has a standalone Git repository today, and declaring a skill whose `repo` does not exist would produce a permanent `REMOTE_UNREACHABLE` line in every node report.
+`disabled` is not only for repositories that do not exist yet. It records every name that must stay out of sync on purpose: capability that has moved into another canonical repository, tools that were retired, and repositories kept only as read-only references until they are frozen with a tag.
 
-| Name | Reason recorded in the manifest |
-|---|---|
-| `ark-env` | Node environment variables are distributed from `/srv/storage/ark/env/env.json` over read-only HTTP, not from a repository. Revisit when NOAH-49 (`ark-node`) creates one. |
-| `ark-mesh` | Node fetching is a single `ark_fetch.py`, with no repository behind it. Revisit on the same condition. |
+| Name | Class | Reason recorded in the manifest |
+|---|---|---|
+| `Polaris` | read-only reference | Capability merged into `lstest` (NOAH-54 parity 31/31); read-only from this phase on. |
+| `tcl-device-autoburn` | retired | Discontinued; `venusahisiburner` covers it. |
+| `ark-env` | merged | No standalone Git repository; capability lives in `ark-node`. |
+| `ark-mesh` | merged | No standalone Git repository; capability lives in `ark-node`. |
+| `burn_bundle` | archive candidate | Read-only reference; freeze with a tag after 郑保山 approves. |
+| `polaris-device-validation` | archive candidate | Read-only reference; freeze with a tag after 郑保山 approves. |
+| `listenai-laid-installer` | archive candidate | Read-only reference; freeze with a tag after 郑保山 approves. |
+| `a4m-Jenkins` | archive candidate | Read-only reference; freeze with a tag after 郑保山 approves. |
 
-Both entries sit in `disabled`, so no profile can select them and no report lists them. Background on the whole inventory: [repo-inventory.md](repo-inventory.md).
+None of these can be selected by a profile, so none appears in a report and none is ever reported `ABSENT`. Background on the whole inventory: [repo-inventory.md](repo-inventory.md).
 
 ## Adding a canonical skill
 
@@ -114,7 +123,7 @@ Both entries sit in `disabled`, so no profile can select them and no report list
    python3 skill_sync.py --profile bsz-t14 apply --yes --only <name>
    ```
 
-6. If the repository does not exist yet, add the name to `disabled` with a reason instead of adding a `skills` entry.
+6. If the repository does not exist yet, or the capability belongs in another repository, add the name to `disabled` with a reason instead of adding a `skills` entry.
 
 ## Related data files
 
@@ -126,12 +135,12 @@ State, schema `ark.skillhub-sync.state.v1`, one record per installed skill:
 |---|---|
 | `schema` | `ark.skillhub-sync.state.v1` |
 | `host` | Hostname that last wrote the file. |
-| `updated_at` | UTC timestamp of the last write. |
+| `updated_at` | Beijing time (`YYYY-MM-DD HH:MM:SS`, no timezone designator) of the last write. |
 | `skills.<name>.repo`, `.ref`, `.path` | What was installed, as declared at the time. |
 | `skills.<name>.sha` | Resolved commit. |
 | `skills.<name>.tree_digest` | `sha256:` digest of the installed tree under the skill's `exclude` list. |
 | `skills.<name>.file_count` | Files counted into the digest. |
-| `skills.<name>.installed_at` | UTC timestamp. |
+| `skills.<name>.installed_at` | Beijing time (`YYYY-MM-DD HH:MM:SS`, no timezone designator). |
 | `skills.<name>.installed_by` | `skillhub-sync/<version>`. |
 
 Writes are atomic: a temporary file in the same directory, then `os.replace`.
@@ -146,3 +155,5 @@ Report, schema `ark.skillhub-sync.report.v1`, printed by every command:
 | `entries[]` | One object per selected skill. |
 
 Each entry carries `name`, `status`, `action` (`none`, `install`, `update`), `reason`, `local_sha`, `remote_sha`, `local_digest`, `baseline_digest`, `path`, `repo`, `ref`, `verified`, `error`. `verified` is true only when a remote commit was actually resolved or compared in this run.
+
+Every time field in the state and report files is Beijing time (UTC+8) in `YYYY-MM-DD HH:MM:SS` form, with no timezone designator: no 'T' separator, no 'Z' suffix, no numeric offset. File and directory timestamp names use `YYYYMMDD-HHMMSS`.

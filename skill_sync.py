@@ -31,6 +31,14 @@ hardlinks and devices are skipped; nothing may be written outside the
 staging directory.  Tokens are read only from the environment variable named
 by the manifest (``auth.token_env``), and are redacted from every message.
 
+时间契约（Ark 工作区统一）
+--------------------------
+本仓库所有用户可见、机器可读的时间字段一律为**北京时间**（UTC+8），且不带
+时区标记，格式固定为 ``YYYY-MM-DD HH:MM:SS``；文件名 / 目录名里的时间戳格式
+固定为 ``YYYYMMDD-HHMMSS``（连字符）。禁止使用 'T' 作为日期时间分隔符，禁止
+在结尾追加 'Z'，也禁止任何数字时区偏移。实现只用标准库的固定 +8 偏移，不依赖
+``zoneinfo`` / ``tzdata``（Windows 节点可能没有 tzdata）。
+
 NOTE: this module is intentionally a single file.  The project contract
 requires exactly one executable plus one test module, so the usual
 one-responsibility-per-file split does not apply here (SIZE_OK).
@@ -57,7 +65,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-TOOL_VERSION = "0.1.0"
+TOOL_VERSION = "0.1.1"
 MANIFEST_SCHEMA = "ark.skillhub-sync.v1"
 PROFILE_SCHEMA = "ark.skillhub-sync.profile.v1"
 REPORT_SCHEMA = "ark.skillhub-sync.report.v1"
@@ -127,18 +135,19 @@ class SkillError(Exception):
 # ---------------------------------------------------------------------------
 
 
-def now_utc():
-    """RFC3339-ish UTC timestamp with a trailing Z."""
-    return (
-        datetime.datetime.now(datetime.timezone.utc)
-        .replace(microsecond=0)
-        .strftime("%Y-%m-%dT%H:%M:%SZ")
-    )
+BEIJING = datetime.timezone(datetime.timedelta(hours=8), "Asia/Shanghai")
+FMT_TIME = "%Y-%m-%d %H:%M:%S"
+FMT_STAMP = "%Y%m%d-%H%M%S"
 
 
-def stamp_compact():
-    """Compact timestamp usable as a directory name."""
-    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+def now_text():
+    """当前北京时间，契约格式 YYYY-MM-DD HH:MM:SS（无时区标记）。"""
+    return datetime.datetime.now(BEIJING).replace(microsecond=0).strftime(FMT_TIME)
+
+
+def now_stamp():
+    """当前北京时间，文件名时间戳 YYYYMMDD-HHMMSS。"""
+    return datetime.datetime.now(BEIJING).strftime(FMT_STAMP)
 
 
 def redact_secrets(text):
@@ -426,7 +435,7 @@ def save_state(path, state):
     directory = os.path.dirname(os.path.abspath(path))
     os.makedirs(directory, exist_ok=True)
     state["schema"] = STATE_SCHEMA
-    state["updated_at"] = now_utc()
+    state["updated_at"] = now_text()
     payload = json.dumps(state, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     handle, temp_path = tempfile.mkstemp(prefix=".state.", suffix=".tmp", dir=directory)
     try:
@@ -1099,7 +1108,7 @@ def _staging_root(install_root):
 def _unique_backup_path(name, install_root):
     """Return a free backup directory for ``name`` (same-second safe)."""
     directory = os.path.join(_backup_root(install_root), name)
-    base = stamp_compact()
+    base = now_stamp()
     candidate = os.path.join(directory, base)
     counter = 1
     while os.path.exists(candidate):
@@ -1128,7 +1137,7 @@ def _state_entry(skill, sha, digest, file_count):
         "path": skill["path"],
         "sha": sha,
         "tree_digest": digest,
-        "installed_at": now_utc(),
+        "installed_at": now_text(),
         "installed_by": "skillhub-sync/" + TOOL_VERSION,
         "file_count": file_count,
     }
@@ -1358,7 +1367,7 @@ def build_report(profile_name, install_root, offline, entries):
     return {
         "schema": REPORT_SCHEMA,
         "tool_version": TOOL_VERSION,
-        "generated_at": now_utc(),
+        "generated_at": now_text(),
         "host": socket.gethostname(),
         "profile": profile_name,
         "install_root": install_root,

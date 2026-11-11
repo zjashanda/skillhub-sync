@@ -7,10 +7,12 @@
     "venusahisiburner",
     "lstest",
     "listenai-play",
-    "Polaris",
     "usb-tree",
     "clearusb",
-    "skill-git"
+    "skill-git",
+    "device-io",
+    "audio-runtime",
+    "tts-runtime"
   ],
   "include_tags": [],
   "exclude": ["mars-belt"],

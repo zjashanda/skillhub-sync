@@ -12,7 +12,7 @@ Before replacing a tree, `apply` moves the existing directory into:
 <install_root>/.skillhub-sync/backups/<name>/<timestamp>/
 ```
 
-`<timestamp>` is compact UTC, `YYYYMMDDTHHMMSSZ`. A suffix `-1`, `-2` is appended when two runs land in the same second. The newest `keep_backups` directories per skill are kept (profile field, default 3); older ones are removed after a successful replacement.
+`<timestamp>` is Beijing time (UTC+8) formatted `YYYYMMDD-HHMMSS` (hyphen separator, no timezone designator). A suffix `-1`, `-2` is appended when two runs land in the same second. The newest `keep_backups` directories per skill are kept (profile field, default 3); older ones are removed after a successful replacement.
 
 A backup is the complete previous tree, not a diff. A skill that existed before the first run and was never installed by this tool has no backup, because nothing was ever replaced by this tool.
 
@@ -34,7 +34,7 @@ PROFILE=bsz-t14
 NAME=clearusb
 
 LATEST=$(ls -1d "$ROOT/.skillhub-sync/backups/$NAME"/*/ | sort | tail -n 1)
-STAMP=$(date -u +%Y%m%dT%H%M%SZ)
+STAMP=$(TZ='Asia/Shanghai' date +%Y%m%d-%H%M%S)
 
 mkdir -p "$HOME/ark-restore"
 mv "$ROOT/$NAME" "$HOME/ark-restore/$NAME.$STAMP"
@@ -64,7 +64,7 @@ To go back to the upstream tip instead of keeping the restored tree, see the nex
 ROOT="$HOME/.codex/skills"
 PROFILE=bsz-t14
 NAME=clearusb
-STAMP=$(date -u +%Y%m%dT%H%M%SZ)
+STAMP=$(TZ='Asia/Shanghai' date +%Y%m%d-%H%M%S)
 
 mkdir -p "$HOME/ark-restore"
 mv "$ROOT/$NAME" "$HOME/ark-restore/$NAME.$STAMP"

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.1
+
+修复时间格式违约，并把 canonical 清单收口为 14 个入口。
+
+### Fixed
+
+- 所有时间字段改为北京时间（UTC+8）无时区格式 `YYYY-MM-DD HH:MM:SS`：状态文件的 `updated_at`、`installed_at` 与报告里的 `generated_at` 不再带 `T` 分隔符或 `Z` 后缀。实现只用标准库固定 +8 偏移，不依赖 `zoneinfo` / `tzdata`。
+- 备份目录名改为 `YYYYMMDD-HHMMSS`（连字符，北京时间），同秒冲突仍追加 `-1`、`-2`。
+- 新增 `tools/time_lint.py`：自包含的源码扫描器，检查 strftime 模板里的 T 分隔符、Z 后缀、数字时区偏移与微秒占位，以及 UTC 取值函数、UTC 时区常量和 isoformat 调用；支持 `--json` / `--quiet` / `--gate` / `--self-test` 与 `time-lint:allow` 豁免计数。
+
+### Changed
+
+- `manifests/canonical.json` 的 `skills[]` 收口为 14 条并按固定顺序排列：venusahisiburner、lstest、listenai-play、mars-belt、usb-tree、clearusb、device-io、audio-runtime、tts-runtime、skill-git、ark-dispatch、ark-kb、ark-node、asset-tools。新增 device-io、audio-runtime、tts-runtime、ark-node、asset-tools；ark-node 与 asset-tools 无 `SKILL.md`，标记 `require_skill_md: false`。
+- `disabled[]` 改为记录“有意不同步”的条目：Polaris（能力并入 lstest）、tcl-device-autoburn（已停用）、ark-env / ark-mesh（能力并入 ark-node），以及 burn_bundle、polaris-device-validation、listenai-laid-installer、a4m-Jenkins 四个归档候选。
+- `manifests/profiles/win-bench.json` 移除 Polaris，加入 device-io、audio-runtime、tts-runtime；`bsz-t14.json` 加入 ark-node、asset-tools；`template.json` 不变。
+- `docs/manifest.md` 与 `docs/rollback.md` 同步时间契约与 `disabled[]` 语义说明。
+- 测试新增时间格式、备份目录名、报告/状态无时区标记与 `time_lint --gate` 的断言。
+
 ## 0.1.0
 
 Initial release.
