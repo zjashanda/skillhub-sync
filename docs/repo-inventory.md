@@ -22,7 +22,7 @@
 
 | Skill | 仓库 | 大小 | 根 SKILL.md | 备注 |
 |---|---|---|---|---|
-| venusahisiburner | `zjashanda/venusahisiburner` | 52KB | 有 | 烧录唯一真源（替代已退役的 tcl-device-autoburn） |
+| burner | `zjashanda/burner` | 52KB | 有 | 烧录唯一真源（替代已退役的 tcl-device-autoburn） |
 | Polaris | `zjashanda/Polaris` | 24.9MB | 有 | 真机语音验证框架 |
 | lstest | `zjashanda/lstest` | 718KB | 有 | 公共测试库 |
 | listenai-play | `zjashanda/listenai-play` | 238KB | 有 | 播放/采集入口 + 安装脚本唯一来源 |
@@ -51,6 +51,6 @@
 | 节点 | 平台 | profile | 同步范围 |
 |---|---|---|---|
 | bszT14 | Linux | `bsz-t14` | skill-git、ark-kb、ark-dispatch、lstest |
-| Windows 台架（win005 等） | Windows | `win-bench` | venusahisiburner、lstest、listenai-play、Polaris、usb-tree、clearusb、skill-git |
+| Windows 台架（win005 等） | Windows | `win-bench` | burner、lstest、listenai-play、Polaris、usb-tree、clearusb、skill-git |
 
 其余节点从 `manifests/profiles/template.json` 复制后按需裁剪；不允许按 tag 全量同步。

@@ -95,7 +95,7 @@ Error cases, both exit 3 with nothing written:
 | Name | Class | Reason recorded in the manifest |
 |---|---|---|
 | `Polaris` | read-only reference | Capability merged into `lstest` (NOAH-54 parity 31/31); read-only from this phase on. |
-| `tcl-device-autoburn` | retired | Discontinued; `venusahisiburner` covers it. |
+| `tcl-device-autoburn` | retired | Discontinued; `burner` covers it. |
 | `ark-env` | merged | No standalone Git repository; capability lives in `ark-node`. |
 | `ark-mesh` | merged | No standalone Git repository; capability lives in `ark-node`. |
 | `burn_bundle` | archive candidate | Read-only reference; freeze with a tag after 郑保山 approves. |

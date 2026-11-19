@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — 2026-11-19
+
+### Changed
+
+- `manifests/canonical.json` 的烧录能力条目更名为 `burner`，仓库地址改为 `https://github.com/zjashanda/burner.git`；`manifests/profiles/win-bench.json` 同步。
+- 节点侧已安装旧目录名的节点，重新同步后按新名落盘；旧名只作历史审计保留在 Git 历史与更名前的 CHANGELOG 条目里。
+
 ## 0.1.1
 
 修复时间格式违约，并把 canonical 清单收口为 14 个入口。
