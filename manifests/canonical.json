@@ -7,8 +7,8 @@
   "notes": "canonical Skill 真源清单。只声明经过 NOAH-45 盘点确认的 canonical 能力仓库；节点通过 profile 选择需要同步的子集，不做全量复制。",
   "skills": [
     {
-      "name": "venusahisiburner",
-      "repo": "https://github.com/zjashanda/venusahisiburner.git",
+      "name": "burner",
+      "repo": "https://github.com/zjashanda/burner.git",
       "ref": "main",
       "path": ".",
       "visibility": "public",
@@ -167,7 +167,7 @@
     },
     {
       "name": "tcl-device-autoburn",
-      "reason": "已停用，统一由 venusahisiburner 承担。"
+      "reason": "已停用，统一由 burner 承担。"
     },
     {
       "name": "ark-env",
